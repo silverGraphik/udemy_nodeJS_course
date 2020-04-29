@@ -17,10 +17,9 @@ const MONGODB_URI =
 const app = express();
 const store = new MongoDBStore({
   uri: MONGODB_URI,
-  collection: 'sessions',
+  collection: 'sessions'
 });
-
-const csrfprotection = csrf();
+const csrfProtection = csrf();
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -40,10 +39,10 @@ app.use(
     secret: 'my secret',
     resave: false,
     saveUninitialized: false,
-    store: store,
-  }),
+    store: store
+  })
 );
-app.use(csrfprotection);
+app.use(csrfProtection);
 app.use(flash());
 
 app.use((req, res, next) => {
@@ -51,11 +50,11 @@ app.use((req, res, next) => {
     return next();
   }
   User.findById(req.session.user._id)
-    .then((user) => {
+    .then(user => {
       req.user = user;
       next();
     })
-    .catch((err) => console.log(err));
+    .catch(err => console.log(err));
 });
 
 app.use((req, res, next) => {
@@ -72,9 +71,9 @@ app.use(errorController.get404);
 
 mongoose
   .connect(MONGODB_URI)
-  .then((result) => {
+  .then(result => {
     app.listen(3000);
   })
-  .catch((err) => {
+  .catch(err => {
     console.log(err);
   });
