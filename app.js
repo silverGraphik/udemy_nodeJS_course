@@ -12,12 +12,12 @@ const errorController = require('./controllers/error');
 const User = require('./models/user');
 
 const MONGODB_URI =
-  'mongodb+srv://gaetangerard:azerty@cluster0-fqygu.gcp.mongodb.net/shop?authSource=admin';
+  'mongodb+srv://gaetangerard:azerty@cluster0-fqygu.gcp.mongodb.net/shop';
 
 const app = express();
 const store = new MongoDBStore({
   uri: MONGODB_URI,
-  collection: 'sessions'
+  collection: 'sessions',
 });
 const csrfProtection = csrf();
 
@@ -28,19 +28,15 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 
-app.use(
-  bodyParser.urlencoded({
-    extended: false,
-  }),
-);
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   session({
     secret: 'my secret',
     resave: false,
     saveUninitialized: false,
-    store: store
-  })
+    store: store,
+  }),
 );
 app.use(csrfProtection);
 app.use(flash());
@@ -50,11 +46,11 @@ app.use((req, res, next) => {
     return next();
   }
   User.findById(req.session.user._id)
-    .then(user => {
+    .then((user) => {
       req.user = user;
       next();
     })
-    .catch(err => console.log(err));
+    .catch((err) => console.log(err));
 });
 
 app.use((req, res, next) => {
@@ -71,9 +67,9 @@ app.use(errorController.get404);
 
 mongoose
   .connect(MONGODB_URI)
-  .then(result => {
+  .then((result) => {
     app.listen(3000);
   })
-  .catch(err => {
+  .catch((err) => {
     console.log(err);
   });
