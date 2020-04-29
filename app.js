@@ -12,7 +12,7 @@ const errorController = require('./controllers/error');
 const User = require('./models/user');
 
 const MONGODB_URI =
-  'mongodb+srv://gaetangerard:azerty@cluster0-fqygu.gcp.mongodb.net/shop';
+  'mongodb+srv://gaetangerard:azerty@cluster0-fqygu.gcp.mongodb.net/shop?authSource=admin';
 
 const app = express();
 const store = new MongoDBStore({
@@ -29,9 +29,11 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 
-app.use(bodyParser.urlencoded({
-  extended: false
-}));
+app.use(
+  bodyParser.urlencoded({
+    extended: false,
+  }),
+);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   session({
